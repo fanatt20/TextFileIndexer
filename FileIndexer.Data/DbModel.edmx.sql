@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 08/21/2015 15:40:42
+-- Date Created: 08/21/2015 17:27:37
 -- Generated from EDMX file: C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer.Data\DbModel.edmx
 -- --------------------------------------------------
 
@@ -17,11 +17,32 @@ GO
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[FK_WordsDictionaryWords]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Words] DROP CONSTRAINT [FK_WordsDictionaryWords];
+GO
+IF OBJECT_ID(N'[dbo].[FK_PathToTextFileTextFile]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[TextFiles] DROP CONSTRAINT [FK_PathToTextFileTextFile];
+GO
+IF OBJECT_ID(N'[dbo].[FK_TextFileWords]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Words] DROP CONSTRAINT [FK_TextFileWords];
+GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[TextFiles]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[TextFiles];
+GO
+IF OBJECT_ID(N'[dbo].[PathToTextFiles]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[PathToTextFiles];
+GO
+IF OBJECT_ID(N'[dbo].[Words]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Words];
+GO
+IF OBJECT_ID(N'[dbo].[WordsDictionaries]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[WordsDictionaries];
+GO
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -35,9 +56,11 @@ CREATE TABLE [dbo].[TextFiles] (
 );
 GO
 
--- Creating table 'PathToTextFiles'
-CREATE TABLE [dbo].[PathToTextFiles] (
-    [Id] int IDENTITY(1,1) NOT NULL
+-- Creating table 'PathToTextFileCollections'
+CREATE TABLE [dbo].[PathToTextFileCollections] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [Value] nvarchar(max)  NOT NULL,
+    [PreviousDirectory] int  NULL
 );
 GO
 
@@ -68,9 +91,9 @@ ADD CONSTRAINT [PK_TextFiles]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
--- Creating primary key on [Id] in table 'PathToTextFiles'
-ALTER TABLE [dbo].[PathToTextFiles]
-ADD CONSTRAINT [PK_PathToTextFiles]
+-- Creating primary key on [Id] in table 'PathToTextFileCollections'
+ALTER TABLE [dbo].[PathToTextFileCollections]
+ADD CONSTRAINT [PK_PathToTextFileCollections]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -109,7 +132,7 @@ GO
 ALTER TABLE [dbo].[TextFiles]
 ADD CONSTRAINT [FK_PathToTextFileTextFile]
     FOREIGN KEY ([PathToTextFileId])
-    REFERENCES [dbo].[PathToTextFiles]
+    REFERENCES [dbo].[PathToTextFileCollections]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO

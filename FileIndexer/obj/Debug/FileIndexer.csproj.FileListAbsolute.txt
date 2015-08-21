@@ -1,0 +1,6 @@
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer\bin\Debug\FileIndexer.exe.config
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer\bin\Debug\FileIndexer.exe
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer\bin\Debug\FileIndexer.pdb
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer\obj\Debug\FileIndexer.csprojResolveAssemblyReference.cache
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer\obj\Debug\FileIndexer.exe
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer\obj\Debug\FileIndexer.pdb

@@ -1,0 +1,12 @@
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer.Data\obj\Debug\FileIndexer.Data.csprojResolveAssemblyReference.cache
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer.Data\bin\Debug\TextFilesAndWordsDb.mdf
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer.Data\bin\Debug\TextFilesAndWordsDb_log.ldf
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer.Data\bin\Debug\FileIndexer.Data.dll.config
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer.Data\bin\Debug\FileIndexer.Data.dll
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer.Data\bin\Debug\FileIndexer.Data.pdb
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer.Data\bin\Debug\EntityFramework.dll
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer.Data\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer.Data\bin\Debug\EntityFramework.xml
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer.Data\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer.Data\obj\Debug\FileIndexer.Data.dll
+C:\Users\Андрей\Documents\GitHub\TextFileIndexer\FileIndexer.Data\obj\Debug\FileIndexer.Data.pdb

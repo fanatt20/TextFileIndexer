@@ -1,6 +1,6 @@
 ﻿namespace FileIndexer.Data.Models
 {
-    internal class WordDto
+    public class WordDto
     {
         public string Value { get; set; }
         public int RowPosition { get; set; }

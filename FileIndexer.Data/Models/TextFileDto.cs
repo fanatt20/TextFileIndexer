@@ -2,7 +2,7 @@
 
 namespace FileIndexer.Data.Models
 {
-    internal class TextFileDto
+    public class TextFileDto
     {
         public TextFileDto()
         {

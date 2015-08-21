@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="DbModelStoreContainer" CdmEntityContainer="DbModelContainer">
+    <EntitySetMapping Name="TextFiles">
+      <EntityTypeMapping TypeName="IsTypeOf(DbModel.TextFile)">
+        <MappingFragment StoreEntitySet="TextFiles">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="PathToTextFileId" ColumnName="PathToTextFileId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PathToTextFileCollections">
+      <EntityTypeMapping TypeName="IsTypeOf(DbModel.PathToTextFileCollection)">
+        <MappingFragment StoreEntitySet="PathToTextFileCollections">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="PreviousDirectory" ColumnName="PreviousDirectory" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Words">
+      <EntityTypeMapping TypeName="IsTypeOf(DbModel.Words)">
+        <MappingFragment StoreEntitySet="Words">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="WordsDictionaryId" ColumnName="WordsDictionaryId" />
+          <ScalarProperty Name="TextFileId" ColumnName="TextFileId" />
+          <ScalarProperty Name="RowPosition" ColumnName="RowPosition" />
+          <ScalarProperty Name="ColumnPosition" ColumnName="ColumnPosition" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="WordsDictionaries">
+      <EntityTypeMapping TypeName="IsTypeOf(DbModel.WordsDictionary)">
+        <MappingFragment StoreEntitySet="WordsDictionaries">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

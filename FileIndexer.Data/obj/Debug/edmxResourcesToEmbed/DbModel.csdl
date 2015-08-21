@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="DbModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+  <EntityContainer Name="DbModelContainer" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="TextFiles" EntityType="DbModel.TextFile" />
+    <EntitySet Name="PathToTextFileCollections" EntityType="DbModel.PathToTextFileCollection" />
+    <EntitySet Name="Words" EntityType="DbModel.Words" />
+    <EntitySet Name="WordsDictionaries" EntityType="DbModel.WordsDictionary" />
+    <AssociationSet Name="WordsDictionaryWords" Association="DbModel.WordsDictionaryWords">
+      <End Role="WordsDictionary" EntitySet="WordsDictionaries" />
+      <End Role="Words" EntitySet="Words" />
+    </AssociationSet>
+    <AssociationSet Name="PathToTextFileTextFile" Association="DbModel.PathToTextFileTextFile">
+      <End Role="PathToTextFile" EntitySet="PathToTextFileCollections" />
+      <End Role="TextFile" EntitySet="TextFiles" />
+    </AssociationSet>
+    <AssociationSet Name="TextFileWords" Association="DbModel.TextFileWords">
+      <End Role="TextFile" EntitySet="TextFiles" />
+      <End Role="Words" EntitySet="Words" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="TextFile">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" />
+    <NavigationProperty Name="PathToTextFile" Relationship="DbModel.PathToTextFileTextFile" FromRole="TextFile" ToRole="PathToTextFile" />
+    <Property Name="PathToTextFileId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Words" Relationship="DbModel.TextFileWords" FromRole="TextFile" ToRole="Words" />
+  </EntityType>
+  <EntityType Name="PathToTextFileCollection">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <NavigationProperty Name="TextFiles" Relationship="DbModel.PathToTextFileTextFile" FromRole="PathToTextFile" ToRole="TextFile" />
+    <Property Name="Value" Type="String" Nullable="false" />
+    <Property Name="PreviousDirectory" Type="Int32" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Words">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <NavigationProperty Name="WordsDictionary" Relationship="DbModel.WordsDictionaryWords" FromRole="Words" ToRole="WordsDictionary" />
+    <Property Name="WordsDictionaryId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="TextFile" Relationship="DbModel.TextFileWords" FromRole="Words" ToRole="TextFile" />
+    <Property Name="TextFileId" Type="Int32" Nullable="false" />
+    <Property Name="RowPosition" Type="Int32" Nullable="false" />
+    <Property Name="ColumnPosition" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="WordsDictionary">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Value" Type="String" Nullable="false" />
+  </EntityType>
+  <Association Name="WordsDictionaryWords">
+    <End Type="DbModel.WordsDictionary" Role="WordsDictionary" Multiplicity="1" />
+    <End Type="DbModel.Words" Role="Words" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="WordsDictionary">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Words">
+        <PropertyRef Name="WordsDictionaryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="PathToTextFileTextFile">
+    <End Type="DbModel.PathToTextFileCollection" Role="PathToTextFile" Multiplicity="1" />
+    <End Type="DbModel.TextFile" Role="TextFile" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PathToTextFile">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="TextFile">
+        <PropertyRef Name="PathToTextFileId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TextFileWords">
+    <End Type="DbModel.TextFile" Role="TextFile" Multiplicity="1" />
+    <End Type="DbModel.Words" Role="Words" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TextFile">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Words">
+        <PropertyRef Name="TextFileId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

@@ -7,7 +7,7 @@
     <Schema Namespace="DbModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityContainer Name="DbModelStoreContainer">
     <EntitySet Name="TextFiles" EntityType="DbModel.Store.TextFiles" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="PathToTextFiles" EntityType="DbModel.Store.PathToTextFiles" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="PathToTextFileCollections" EntityType="DbModel.Store.PathToTextFileCollections" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Words" EntityType="DbModel.Store.Words" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="WordsDictionaries" EntityType="DbModel.Store.WordsDictionaries" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="WordsDictionaryWords" Association="DbModel.Store.WordsDictionaryWords">
@@ -15,7 +15,7 @@
       <End Role="Words" EntitySet="Words" />
     </AssociationSet>
     <AssociationSet Name="PathToTextFileTextFile" Association="DbModel.Store.PathToTextFileTextFile">
-      <End Role="PathToTextFile" EntitySet="PathToTextFiles" />
+      <End Role="PathToTextFile" EntitySet="PathToTextFileCollections" />
       <End Role="TextFile" EntitySet="TextFiles" />
     </AssociationSet>
     <AssociationSet Name="TextFileWords" Association="DbModel.Store.TextFileWords">
@@ -31,11 +31,13 @@
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
     <Property Name="PathToTextFileId" Type="int" Nullable="false" />
   </EntityType>
-  <EntityType Name="PathToTextFiles">
+  <EntityType Name="PathToTextFileCollections">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Value" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PreviousDirectory" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="Words">
     <Key>
@@ -44,8 +46,8 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="WordsDictionaryId" Type="int" Nullable="false" />
     <Property Name="TextFileId" Type="int" Nullable="false" />
-    <Property Name="RowPosition" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="ColumnPosition" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RowPosition" Type="int" Nullable="false" />
+    <Property Name="ColumnPosition" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="WordsDictionaries">
     <Key>
@@ -67,7 +69,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="PathToTextFileTextFile">
-    <End Role="PathToTextFile" Type="DbModel.Store.PathToTextFiles" Multiplicity="1" />
+    <End Role="PathToTextFile" Type="DbModel.Store.PathToTextFileCollections" Multiplicity="1" />
     <End Role="TextFile" Type="DbModel.Store.TextFiles" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="PathToTextFile">
@@ -203,8 +205,10 @@
     </EntitySetMapping>
     <EntitySetMapping Name="PathToTextFileCollections">
       <EntityTypeMapping TypeName="IsTypeOf(DbModel.PathToTextFileCollection)">
-        <MappingFragment StoreEntitySet="PathToTextFiles">
+        <MappingFragment StoreEntitySet="PathToTextFileCollections">
           <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="PreviousDirectory" ColumnName="PreviousDirectory" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
