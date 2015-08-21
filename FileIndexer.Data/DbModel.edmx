@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DbModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="DbModelStoreContainer">
+    <EntitySet Name="TextFiles" EntityType="DbModel.Store.TextFiles" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="PathToTextFiles" EntityType="DbModel.Store.PathToTextFiles" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Words" EntityType="DbModel.Store.Words" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="WordsDictionaries" EntityType="DbModel.Store.WordsDictionaries" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="WordsDictionaryWords" Association="DbModel.Store.WordsDictionaryWords">
+      <End Role="WordsDictionary" EntitySet="WordsDictionaries" />
+      <End Role="Words" EntitySet="Words" />
+    </AssociationSet>
+    <AssociationSet Name="PathToTextFileTextFile" Association="DbModel.Store.PathToTextFileTextFile">
+      <End Role="PathToTextFile" EntitySet="PathToTextFiles" />
+      <End Role="TextFile" EntitySet="TextFiles" />
+    </AssociationSet>
+    <AssociationSet Name="TextFileWords" Association="DbModel.Store.TextFileWords">
+      <End Role="TextFile" EntitySet="TextFiles" />
+      <End Role="Words" EntitySet="Words" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="TextFiles">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PathToTextFileId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PathToTextFiles">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Words">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="WordsDictionaryId" Type="int" Nullable="false" />
+    <Property Name="TextFileId" Type="int" Nullable="false" />
+    <Property Name="RowPosition" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ColumnPosition" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="WordsDictionaries">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Value" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <Association Name="WordsDictionaryWords">
+    <End Role="WordsDictionary" Type="DbModel.Store.WordsDictionaries" Multiplicity="1" />
+    <End Role="Words" Type="DbModel.Store.Words" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="WordsDictionary">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Words">
+        <PropertyRef Name="WordsDictionaryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="PathToTextFileTextFile">
+    <End Role="PathToTextFile" Type="DbModel.Store.PathToTextFiles" Multiplicity="1" />
+    <End Role="TextFile" Type="DbModel.Store.TextFiles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PathToTextFile">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="TextFile">
+        <PropertyRef Name="PathToTextFileId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TextFileWords">
+    <End Role="TextFile" Type="DbModel.Store.TextFiles" Multiplicity="1" />
+    <End Role="Words" Type="DbModel.Store.Words" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TextFile">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Words">
+        <PropertyRef Name="TextFileId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="DbModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="DbModelContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="TextFiles" EntityType="DbModel.TextFile" />
+          <EntitySet Name="PathToTextFileCollections" EntityType="DbModel.PathToTextFileCollection" />
+          <EntitySet Name="Words" EntityType="DbModel.Words" />
+          <EntitySet Name="WordsDictionaries" EntityType="DbModel.WordsDictionary" />
+          <AssociationSet Name="WordsDictionaryWords" Association="DbModel.WordsDictionaryWords">
+            <End Role="WordsDictionary" EntitySet="WordsDictionaries" />
+            <End Role="Words" EntitySet="Words" />
+          </AssociationSet>
+          <AssociationSet Name="PathToTextFileTextFile" Association="DbModel.PathToTextFileTextFile">
+            <End Role="PathToTextFile" EntitySet="PathToTextFileCollections" />
+            <End Role="TextFile" EntitySet="TextFiles" />
+          </AssociationSet>
+          <AssociationSet Name="TextFileWords" Association="DbModel.TextFileWords">
+            <End Role="TextFile" EntitySet="TextFiles" />
+            <End Role="Words" EntitySet="Words" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="TextFile">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <NavigationProperty Name="PathToTextFile" Relationship="DbModel.PathToTextFileTextFile" FromRole="TextFile" ToRole="PathToTextFile" />
+          <Property Name="PathToTextFileId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Words" Relationship="DbModel.TextFileWords" FromRole="TextFile" ToRole="Words" />
+        </EntityType>
+        <EntityType Name="PathToTextFileCollection">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="TextFiles" Relationship="DbModel.PathToTextFileTextFile" FromRole="PathToTextFile" ToRole="TextFile" />
+          <Property Name="Value" Type="String" Nullable="false" />
+          <Property Name="PreviousDirectory" Type="Int32" Nullable="true" />
+        </EntityType>
+        <EntityType Name="Words">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="WordsDictionary" Relationship="DbModel.WordsDictionaryWords" FromRole="Words" ToRole="WordsDictionary" />
+          <Property Name="WordsDictionaryId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TextFile" Relationship="DbModel.TextFileWords" FromRole="Words" ToRole="TextFile" />
+          <Property Name="TextFileId" Type="Int32" Nullable="false" />
+          <Property Name="RowPosition" Type="Int32" Nullable="false" />
+          <Property Name="ColumnPosition" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WordsDictionary">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Value" Type="String" Nullable="false" />
+        </EntityType>
+        <Association Name="WordsDictionaryWords">
+          <End Type="DbModel.WordsDictionary" Role="WordsDictionary" Multiplicity="1" />
+          <End Type="DbModel.Words" Role="Words" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WordsDictionary">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Words">
+              <PropertyRef Name="WordsDictionaryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PathToTextFileTextFile">
+          <End Type="DbModel.PathToTextFileCollection" Role="PathToTextFile" Multiplicity="1" />
+          <End Type="DbModel.TextFile" Role="TextFile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PathToTextFile">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TextFile">
+              <PropertyRef Name="PathToTextFileId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TextFileWords">
+          <End Type="DbModel.TextFile" Role="TextFile" Multiplicity="1" />
+          <End Type="DbModel.Words" Role="Words" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TextFile">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Words">
+              <PropertyRef Name="TextFileId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="DbModelStoreContainer" CdmEntityContainer="DbModelContainer">
+    <EntitySetMapping Name="TextFiles">
+      <EntityTypeMapping TypeName="IsTypeOf(DbModel.TextFile)">
+        <MappingFragment StoreEntitySet="TextFiles">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="PathToTextFileId" ColumnName="PathToTextFileId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PathToTextFileCollections">
+      <EntityTypeMapping TypeName="IsTypeOf(DbModel.PathToTextFileCollection)">
+        <MappingFragment StoreEntitySet="PathToTextFiles">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Words">
+      <EntityTypeMapping TypeName="IsTypeOf(DbModel.Words)">
+        <MappingFragment StoreEntitySet="Words">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="WordsDictionaryId" ColumnName="WordsDictionaryId" />
+          <ScalarProperty Name="TextFileId" ColumnName="TextFileId" />
+          <ScalarProperty Name="RowPosition" ColumnName="RowPosition" />
+          <ScalarProperty Name="ColumnPosition" ColumnName="ColumnPosition" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="WordsDictionaries">
+      <EntityTypeMapping TypeName="IsTypeOf(DbModel.WordsDictionary)">
+        <MappingFragment StoreEntitySet="WordsDictionaries">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
