@@ -85,7 +85,7 @@ namespace FileIndexer
             _coll.Add(new TextFileDto
             {
                 Name = Path.GetFileName(file.Path),
-                Path = Path.GetFullPath(file.Path),
+                Path = Path.GetDirectoryName(file.Path),
                 WordsInFile = words
             });
         }
@@ -110,7 +110,7 @@ namespace FileIndexer
         public static TextFileElement GetTextFile()
         {
             lock(_lockForTextFileAnalyzer) {
-                Interlocked.Increment(ref _textfileAnalyzerIndex);
+                Interlocked.Increment(ref _textfileAnalyzerIndex);//maybe redundante
                 if(_textfileAnalyzerIndex >= _fileStack.Collection.Count) {
                     if(MultiThreadManager.CurrentAnlyzedDirectoriesByFileAnalyzer < 1)
                         throw new EndOfWork();
@@ -164,7 +164,7 @@ namespace FileIndexer
                             break;
                     }
                     if(_fileAnalyzerIndex < _dirStack.Collection.Count)
-                        return _dirStack.Collection[_dirAnalyzerIndex];
+                        return _dirStack.Collection[_fileAnalyzerIndex];
                     throw new NoneFiles();
                 }
                 return _dirStack.Collection[_fileAnalyzerIndex];
