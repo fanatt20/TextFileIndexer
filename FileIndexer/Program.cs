@@ -10,6 +10,7 @@ namespace FileIndexer
     {
         static void Main(string[] args)
         {
+
         }
     }
 }

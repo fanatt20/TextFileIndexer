@@ -67,6 +67,12 @@
   <ItemGroup>
     <Compile Include="Models\TextFileDto.cs" />
     <Compile Include="Models\WordDto.cs" />
+    <Compile Include="PathToTextFileCollection.cs">
+      <DependentUpon>DbModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TextFile.cs">
+      <DependentUpon>DbModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="TextFilesAndWordsRepo.cs" />
     <Compile Include="DbModel.Context.cs">
       <AutoGen>True</AutoGen>
@@ -83,13 +89,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DbModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="PathToTextFileCollection.cs">
-      <DependentUpon>DbModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TextFile.cs">
-      <DependentUpon>DbModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Words.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>

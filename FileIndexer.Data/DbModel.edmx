@@ -105,13 +105,13 @@
             <End Role="WordsDictionary" EntitySet="WordsDictionaries" />
             <End Role="Words" EntitySet="Words" />
           </AssociationSet>
-          <AssociationSet Name="PathToTextFileTextFile" Association="DbModel.PathToTextFileTextFile">
-            <End Role="PathToTextFile" EntitySet="PathToTextFileCollections" />
-            <End Role="TextFile" EntitySet="TextFiles" />
-          </AssociationSet>
           <AssociationSet Name="TextFileWords" Association="DbModel.TextFileWords">
             <End Role="TextFile" EntitySet="TextFiles" />
             <End Role="Words" EntitySet="Words" />
+          </AssociationSet>
+          <AssociationSet Name="TextFilePathToTextFileCollection" Association="DbModel.TextFilePathToTextFileCollection">
+            <End Role="TextFile" EntitySet="TextFiles" />
+            <End Role="PathToTextFileCollection" EntitySet="PathToTextFileCollections" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="TextFile">
@@ -120,18 +120,18 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" />
-          <NavigationProperty Name="PathToTextFile" Relationship="DbModel.PathToTextFileTextFile" FromRole="TextFile" ToRole="PathToTextFile" />
-          <Property Name="PathToTextFileId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Words" Relationship="DbModel.TextFileWords" FromRole="TextFile" ToRole="Words" />
+          <NavigationProperty Name="Path" Relationship="DbModel.TextFilePathToTextFileCollection" FromRole="TextFile" ToRole="PathToTextFileCollection" />
+          <Property Name="PathId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="PathToTextFileCollection">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="TextFiles" Relationship="DbModel.PathToTextFileTextFile" FromRole="PathToTextFile" ToRole="TextFile" />
           <Property Name="Value" Type="String" Nullable="false" />
-          <Property Name="PreviousDirectory" Type="Int32" Nullable="true" />
+          <Property Name="ParentId" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="TextFiles" Relationship="DbModel.TextFilePathToTextFileCollection" FromRole="PathToTextFileCollection" ToRole="TextFile" />
         </EntityType>
         <EntityType Name="Words">
           <Key>
@@ -164,18 +164,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="PathToTextFileTextFile">
-          <End Type="DbModel.PathToTextFileCollection" Role="PathToTextFile" Multiplicity="1" />
-          <End Type="DbModel.TextFile" Role="TextFile" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PathToTextFile">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="TextFile">
-              <PropertyRef Name="PathToTextFileId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="TextFileWords">
           <End Type="DbModel.TextFile" Role="TextFile" Multiplicity="1" />
           <End Type="DbModel.Words" Role="Words" Multiplicity="*" />
@@ -188,6 +176,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="TextFilePathToTextFileCollection">
+          <End Type="DbModel.TextFile" Role="TextFile" Multiplicity="*" />
+          <End Type="DbModel.PathToTextFileCollection" Role="PathToTextFileCollection" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="PathToTextFileCollection">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TextFile">
+              <PropertyRef Name="PathId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -197,18 +197,18 @@
     <EntitySetMapping Name="TextFiles">
       <EntityTypeMapping TypeName="IsTypeOf(DbModel.TextFile)">
         <MappingFragment StoreEntitySet="TextFiles">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="PathId" ColumnName="PathToTextFileId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
-          <ScalarProperty Name="PathToTextFileId" ColumnName="PathToTextFileId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="PathToTextFileCollections">
       <EntityTypeMapping TypeName="IsTypeOf(DbModel.PathToTextFileCollection)">
         <MappingFragment StoreEntitySet="PathToTextFileCollections">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ParentId" ColumnName="PreviousDirectory" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Value" ColumnName="Value" />
-          <ScalarProperty Name="PreviousDirectory" ColumnName="PreviousDirectory" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

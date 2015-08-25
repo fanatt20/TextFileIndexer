@@ -22,10 +22,10 @@ namespace FileIndexer.Data
     
         public int Id { get; set; }
         public string Name { get; set; }
-        public int PathToTextFileId { get; set; }
+        public int PathId { get; set; }
     
-        public virtual PathToTextFileCollection PathToTextFile { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Words> Words { get; set; }
+        public virtual PathToTextFileCollection Path { get; set; }
     }
 }
