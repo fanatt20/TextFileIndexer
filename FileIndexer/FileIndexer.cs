@@ -7,11 +7,12 @@ using FileIndexer.Data.Models;
 
 namespace FileIndexer
 {
-    class Program
+    class FileIndexer
     {
-        static void Main(string[] args)
+        
+        static public IQueryable<TextFileDto> GetTextFiles(string rootDirectory)
         {
-            IQueryable<TextFileDto> files = FileIndexer.GetTextFiles(Console.ReadLine());
+            
         }
     }
 }
