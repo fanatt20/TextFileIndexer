@@ -11,7 +11,15 @@ namespace FileIndexer
     {
         static void Main(string[] args)
         {
-            IQueryable<TextFileDto> files = FileIndexer.GetTextFiles(Console.ReadLine());
+            foreach(var textFileDto in FileIndexer.GetTextFiles(@"G:\003_Бизнес\"))
+            {
+                Console.WriteLine(textFileDto.Path+textFileDto.Name);
+                foreach (var word in textFileDto.WordsInFile)
+                {
+                    Console.Write(word.Value);
+                }
+            }
+            Console.ReadKey();
         }
     }
 }

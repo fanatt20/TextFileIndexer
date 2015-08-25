@@ -11,6 +11,6 @@ namespace FileIndexer.Data.Models
 
         public string Path { get; set; }
         public string Name { get; set; }
-        public List<WordDto> WordsInFile { get; private set; }
+        public List<WordDto> WordsInFile { get;  set; }
     }
 }

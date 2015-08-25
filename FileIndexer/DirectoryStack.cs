@@ -3,9 +3,23 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using FileIndexer.Data.Models;
 
 namespace FileIndexer
 {
+    public class EndOfWork:Exception
+    {
+    }
+
+    public class NoneFiles:Exception
+    {
+
+    }
+
+    public class NonDirectories:Exception
+    {
+    }
+
     internal class DirectoryStack
     {
         public DirectoryStack()
@@ -44,8 +58,41 @@ namespace FileIndexer
     {
         public static void Analyze(DirectoryElement dir)
         {
-            var files = Directory.GetFiles(dir.Path);
-            StackAdapter.AddRangeTextFile(files.Select(str => new TextFileElement {Path = str}));
+            var files = Directory.GetFiles(dir.Path).Where(str => Path.GetExtension(str).Contains(".txt"));
+            StackAdapter.AddRangeTextFile(files.Select(str => new TextFileElement { Path = str }));
+        }
+    }
+
+    public class TextFileAnalyzer
+    {
+        private static readonly List<TextFileDto> _coll = new List<TextFileDto>();
+
+        public static void Analyze(TextFileElement file)
+        {
+            var words = new List<WordDto>();
+            var rowPosition = -1;
+
+            using(var sr = new StreamReader(file.Path)) {
+                while(!sr.EndOfStream) {
+                    var columnPosition = 0;
+                    rowPosition += 1;
+                    foreach(var str in sr.ReadLine().Split(' ')) {
+                        words.Add(new WordDto { ColumnPosition = columnPosition, RowPosition = rowPosition, Value = str });
+                        columnPosition += str.Length + 1;
+                    }
+                }
+            }
+            _coll.Add(new TextFileDto
+            {
+                Name = Path.GetFileName(file.Path),
+                Path = Path.GetFullPath(file.Path),
+                WordsInFile = words
+            });
+        }
+
+        public static IQueryable<TextFileDto> GetTextFileDtos()
+        {
+            return _coll.AsQueryable();
         }
     }
 
@@ -53,61 +100,63 @@ namespace FileIndexer
     {
         private static readonly DirectoryStack _dirStack = new DirectoryStack();
         private static readonly FileStack _fileStack = new FileStack();
-        private static  int _fileAnalyzerIndex = -1;
+        private static int _fileAnalyzerIndex = -1;
         private static readonly object _lockForFileAnalyzer = new object();
         private static int _dirAnalyzerIndex = -1;
         private static readonly object _lockForDirAnalyzer = new object();
+        private static int _textfileAnalyzerIndex = -1;
+        private static readonly object _lockForTextFileAnalyzer = new object();
+
+        public static TextFileElement GetTextFile()
+        {
+            lock(_lockForTextFileAnalyzer) {
+                Interlocked.Increment(ref _textfileAnalyzerIndex);
+                if(_textfileAnalyzerIndex >= _fileStack.Collection.Count) {
+                    if(MultiThreadManager.CurrentAnlyzedDirectoriesByFileAnalyzer < 1)
+                        throw new EndOfWork();
+                    while(true) {
+                        Thread.Sleep(5);
+                        if(MultiThreadManager.CurrentAnlyzedDirectoriesByFileAnalyzer < 1 ||
+                            _textfileAnalyzerIndex < _fileStack.Collection.Count)
+                            break;
+                    }
+                    if(_textfileAnalyzerIndex < _fileStack.Collection.Count)
+                        return _fileStack.Collection[_textfileAnalyzerIndex];
+                    throw new EndOfWork();
+                }
+                return _fileStack.Collection[_textfileAnalyzerIndex];
+            }
+        }
 
         public static DirectoryElement GetDirForDirAnayzer()
         {
-            lock (_lockForDirAnalyzer)
-            {
+            lock(_lockForDirAnalyzer) {
                 Interlocked.Increment(ref _dirAnalyzerIndex);
 
-                if (_dirAnalyzerIndex >= _dirStack.Collection.Count)
-                {
-                    if (MultiThreadManager.CurrentAnlyzedDirectoriesByDirAnalyzer < 1)
-                        throw new IndexOutOfRangeException();
-                    while (true)
-                    {
+                if(_dirAnalyzerIndex >= _dirStack.Collection.Count) {
+                    if(MultiThreadManager.CurrentAnlyzedDirectoriesByDirAnalyzer < 1)
+                        throw new NonDirectories();
+                    while(true) {
                         Thread.Sleep(5);
-                        if (MultiThreadManager.CurrentAnlyzedDirectoriesByDirAnalyzer < 1 ||
+                        if(MultiThreadManager.CurrentAnlyzedDirectoriesByDirAnalyzer < 1 ||
                             _dirAnalyzerIndex < _dirStack.Collection.Count)
                             break;
                     }
-                    if (_dirAnalyzerIndex < _dirStack.Collection.Count)
+                    if(_dirAnalyzerIndex < _dirStack.Collection.Count)
                         return _dirStack.Collection[_dirAnalyzerIndex];
-                    throw new IndexOutOfRangeException();
+                    throw new NonDirectories();
                 }
                 return _dirStack.Collection[_dirAnalyzerIndex];
             }
         }
 
-        public static void AddDirectory(DirectoryElement dir)
-        {
-            lock (_dirStack)
-            {
-                _dirStack.Collection.Add(dir);
-            }
-        }
-
-        public static void AddRangeDirectory(IEnumerable<DirectoryElement> collection)
-        {
-            lock (_dirStack)
-            {
-                _dirStack.Collection.AddRange(collection);
-            }
-        }
-
         public static DirectoryElement GetDirForFileAnayzer()
         {
-            
-            lock (_lockForFileAnalyzer)
-            {
+            lock(_lockForFileAnalyzer) {
                 Interlocked.Increment(ref _fileAnalyzerIndex);
                 if(_fileAnalyzerIndex >= _dirStack.Collection.Count) {
                     if(MultiThreadManager.CurrentAnlyzedDirectoriesByDirAnalyzer < 1)
-                        throw new IndexOutOfRangeException();
+                        throw new NoneFiles();
                     while(true) {
                         Thread.Sleep(5);
                         if(MultiThreadManager.CurrentAnlyzedDirectoriesByDirAnalyzer < 1 ||
@@ -116,24 +165,46 @@ namespace FileIndexer
                     }
                     if(_fileAnalyzerIndex < _dirStack.Collection.Count)
                         return _dirStack.Collection[_dirAnalyzerIndex];
-                    throw new IndexOutOfRangeException();
+                    throw new NoneFiles();
                 }
                 return _dirStack.Collection[_fileAnalyzerIndex];
             }
         }
 
+        public static IEnumerable<DirectoryElement> GetDirectoryStack()
+        {
+            return _dirStack.Collection.AsEnumerable();
+        }
+
+        public static IEnumerable<TextFileElement> GetFileStack()
+        {
+            return _fileStack.Collection.AsEnumerable();
+        }
+
+        public static void AddDirectory(DirectoryElement dir)
+        {
+            lock(_dirStack) {
+                _dirStack.Collection.Add(dir);
+            }
+        }
+
+        public static void AddRangeDirectory(IEnumerable<DirectoryElement> collection)
+        {
+            lock(_dirStack) {
+                _dirStack.Collection.AddRange(collection);
+            }
+        }
+
         public static void AddTextFile(TextFileElement dir)
         {
-            lock (_fileStack)
-            {
+            lock(_fileStack) {
                 _fileStack.Collection.Add(dir);
             }
         }
 
         public static void AddRangeTextFile(IEnumerable<TextFileElement> collection)
         {
-            lock (_fileStack)
-            {
+            lock(_fileStack) {
                 _fileStack.Collection.AddRange(collection);
             }
         }
@@ -158,6 +229,12 @@ namespace FileIndexer
             Interlocked.Increment(ref CurrentAnlyzedDirectoriesByFileAnalyzer);
             FileAnalyzer.Analyze(dirForAnalyze);
             Interlocked.Decrement(ref CurrentAnlyzedDirectoriesByFileAnalyzer);
+        }
+
+        public static void AnalyzeFile()
+        {
+            var file = StackAdapter.GetTextFile();
+            TextFileAnalyzer.Analyze(file);
         }
     }
 
