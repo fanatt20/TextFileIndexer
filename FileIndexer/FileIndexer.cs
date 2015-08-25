@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using FileIndexer.Data.Models;
 
@@ -9,10 +10,41 @@ namespace FileIndexer
 {
     class FileIndexer
     {
+        private static void RunDirAnalyzer()
+        {
+            try {
+                while(true) {
+                    MultiThreadManager.AnalyzeDirectoryForSubDirectories();
+                }
+            }
+            catch(NonDirectories) { }
+
+        }
+        private static void RunFileAnalyzer()
+        {
+            try {
+                while(true) {
+                    MultiThreadManager.AnalyzeDirectoryForFiles();
+                }
+            }
+            catch(NoneFiles) { }
+        }
+
+        private static void RunTextFileAnalyzer()
+        {
+            try {
+                while(true) {
+                    MultiThreadManager.AnalyzeFile();
+                }
+            }
+            catch(EndOfWork) { }
+            
+        }
         public static IQueryable<TextFileDto> GetTextFiles(string rootDirectory)
         {
             StackAdapter.AddDirectory(new DirectoryElement(rootDirectory));
-            try {
+#region MonoThread Variant
+            /* try {
                 while(true) {
                     try {
                         while(true) {
@@ -20,7 +52,7 @@ namespace FileIndexer
                         }
                     }
                     catch(NonDirectories) { }
-                    
+
                     try {
                         while(true) {
                             MultiThreadManager.AnalyzeDirectoryForFiles();
@@ -33,7 +65,17 @@ namespace FileIndexer
 
             }
             catch(EndOfWork) {
-            }
+            }*/
+#endregion
+#region MultiThread Variant
+            Thread dirThread= new Thread(RunDirAnalyzer);
+            dirThread.Start();
+            var filesThread=new Thread(RunFileAnalyzer);
+            filesThread.Start();
+            var textfilesThread=new Thread(RunTextFileAnalyzer);
+            textfilesThread.Start();
+            textfilesThread.Join();
+#endregion
             return TextFileAnalyzer.GetTextFileDtos();
 
         }

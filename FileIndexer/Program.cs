@@ -11,13 +11,14 @@ namespace FileIndexer
     {
         static void Main(string[] args)
         {
-            foreach(var textFileDto in FileIndexer.GetTextFiles(@"G:\003_Бизнес\"))
+            foreach(var textFileDto in FileIndexer.GetTextFiles(@"C:\Users\Андрей\Desktop\Tree"))
             {
-                Console.WriteLine(textFileDto.Path+textFileDto.Name);
+                Console.WriteLine(textFileDto.Path+" "+textFileDto.Name);
                 foreach (var word in textFileDto.WordsInFile)
                 {
                     Console.Write(word.Value);
                 }
+                Console.WriteLine(Environment.NewLine);
             }
             Console.ReadKey();
         }
