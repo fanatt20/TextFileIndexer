@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -44,7 +45,7 @@ namespace FileIndexer
         public static void Analyze(DirectoryElement dir)
         {
             var files = Directory.GetFiles(dir.Path);
-            StackAdapter.AddRangeTextFile(files.Select(str => new TextFileElement { Path = str }));
+            StackAdapter.AddRangeTextFile(files.Select(str => new TextFileElement {Path = str}));
         }
     }
 
@@ -52,17 +53,31 @@ namespace FileIndexer
     {
         private static readonly DirectoryStack _dirStack = new DirectoryStack();
         private static readonly FileStack _fileStack = new FileStack();
-        private static readonly int _fileAnalyzerIndex = -1;
+        private static  int _fileAnalyzerIndex = -1;
         private static readonly object _lockForFileAnalyzer = new object();
         private static int _dirAnalyzerIndex = -1;
         private static readonly object _lockForDirAnalyzer = new object();
 
         public static DirectoryElement GetDirForDirAnayzer()
         {
-            lock(_lockForDirAnalyzer) {
+            lock (_lockForDirAnalyzer)
+            {
                 Interlocked.Increment(ref _dirAnalyzerIndex);
 
-                if(_dirAnalyzerIndex > _dirStack.Collection.Count) {
+                if (_dirAnalyzerIndex >= _dirStack.Collection.Count)
+                {
+                    if (MultiThreadManager.CurrentAnlyzedDirectoriesByDirAnalyzer < 1)
+                        throw new IndexOutOfRangeException();
+                    while (true)
+                    {
+                        Thread.Sleep(5);
+                        if (MultiThreadManager.CurrentAnlyzedDirectoriesByDirAnalyzer < 1 ||
+                            _dirAnalyzerIndex < _dirStack.Collection.Count)
+                            break;
+                    }
+                    if (_dirAnalyzerIndex < _dirStack.Collection.Count)
+                        return _dirStack.Collection[_dirAnalyzerIndex];
+                    throw new IndexOutOfRangeException();
                 }
                 return _dirStack.Collection[_dirAnalyzerIndex];
             }
@@ -70,22 +85,38 @@ namespace FileIndexer
 
         public static void AddDirectory(DirectoryElement dir)
         {
-            lock(_dirStack) {
+            lock (_dirStack)
+            {
                 _dirStack.Collection.Add(dir);
             }
         }
 
         public static void AddRangeDirectory(IEnumerable<DirectoryElement> collection)
         {
-            lock(_dirStack) {
+            lock (_dirStack)
+            {
                 _dirStack.Collection.AddRange(collection);
             }
         }
 
         public static DirectoryElement GetDirForFileAnayzer()
         {
-            lock(_lockForFileAnalyzer) {
-                if(_fileAnalyzerIndex > _dirStack.Collection.Count) {
+            
+            lock (_lockForFileAnalyzer)
+            {
+                Interlocked.Increment(ref _fileAnalyzerIndex);
+                if(_fileAnalyzerIndex >= _dirStack.Collection.Count) {
+                    if(MultiThreadManager.CurrentAnlyzedDirectoriesByDirAnalyzer < 1)
+                        throw new IndexOutOfRangeException();
+                    while(true) {
+                        Thread.Sleep(5);
+                        if(MultiThreadManager.CurrentAnlyzedDirectoriesByDirAnalyzer < 1 ||
+                            _fileAnalyzerIndex < _dirStack.Collection.Count)
+                            break;
+                    }
+                    if(_fileAnalyzerIndex < _dirStack.Collection.Count)
+                        return _dirStack.Collection[_dirAnalyzerIndex];
+                    throw new IndexOutOfRangeException();
                 }
                 return _dirStack.Collection[_fileAnalyzerIndex];
             }
@@ -93,14 +124,16 @@ namespace FileIndexer
 
         public static void AddTextFile(TextFileElement dir)
         {
-            lock(_fileStack) {
+            lock (_fileStack)
+            {
                 _fileStack.Collection.Add(dir);
             }
         }
 
         public static void AddRangeTextFile(IEnumerable<TextFileElement> collection)
         {
-            lock(_fileStack) {
+            lock (_fileStack)
+            {
                 _fileStack.Collection.AddRange(collection);
             }
         }
