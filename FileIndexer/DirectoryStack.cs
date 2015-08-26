@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using FileIndexer.Data;
 using FileIndexer.Data.Models;
 
 namespace FileIndexer
@@ -71,24 +73,28 @@ namespace FileIndexer
         {
             var words = new List<WordDto>();
             var rowPosition = -1;
-
+            var line = string.Empty;
             using(var sr = new StreamReader(file.Path)) {
-                while(!sr.EndOfStream) {
+                while((line=sr.ReadLine())!=null) {
                     var columnPosition = 0;
                     rowPosition += 1;
-                    foreach(var str in sr.ReadLine().Split(' ')) {
+                    foreach(var str in line.Split(' ')) {
                         words.Add(new WordDto { ColumnPosition = columnPosition, RowPosition = rowPosition, Value = str });
                         columnPosition += str.Length + 1;
                     }
                 }
             }
-            _coll.Add(new TextFileDto
+            var textFileDto = new TextFileDto
             {
                 Name = Path.GetFileName(file.Path),
                 Path = Path.GetDirectoryName(file.Path),
                 WordsInFile = words
-            });
+            };
+            lock(_coll) {
+                _coll.Add(textFileDto);
+            }
         }
+
 
         public static IQueryable<TextFileDto> GetTextFileDtos()
         {

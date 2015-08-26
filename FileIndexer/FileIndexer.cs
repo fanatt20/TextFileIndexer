@@ -72,9 +72,14 @@ namespace FileIndexer
             dirThread.Start();
             var filesThread=new Thread(RunFileAnalyzer);
             filesThread.Start();
-            var textfilesThread=new Thread(RunTextFileAnalyzer);
-            textfilesThread.Start();
-            textfilesThread.Join();
+            var textfilesThread1=new Thread(RunTextFileAnalyzer);
+            var textfilesThread2 = new Thread(RunTextFileAnalyzer);
+            textfilesThread1.Start();
+            textfilesThread2.Start();
+
+            textfilesThread1.Join();
+            textfilesThread2.Join();
+
 #endregion
             return TextFileAnalyzer.GetTextFileDtos();
 
