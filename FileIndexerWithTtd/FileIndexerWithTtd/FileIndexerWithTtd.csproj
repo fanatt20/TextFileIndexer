@@ -47,7 +47,6 @@
     <Compile Include="FileViewer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\IEnumerableMerge.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

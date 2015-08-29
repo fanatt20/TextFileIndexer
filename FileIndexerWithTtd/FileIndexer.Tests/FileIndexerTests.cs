@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FileIndexerWithTtd;
-
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FileIndexer.Tests
 {
@@ -27,41 +25,44 @@ namespace FileIndexer.Tests
         //TODO: save words into storage
         private IFileSystem _fileSystem;
         private DirectoryTree _tree;
+
         [TestInitialize]
         public void Init()
         {
             _fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
-                 {
-        { @"c:\myfile.txt", new MockFileData("Testing is meh.") },
-        { @"c:\picture.jpg", new MockFileData("") },
-        { @"c:\anotherfile.txt", new MockFileData("Lorem Ipsum") },
-        { @"c:\Dir\",new MockDirectoryData()},
-        { @"c:\Dir\Subdir1\Subdir4\Subdir6\",new MockDirectoryData()},
-        { @"c:\Dir\Subdir2\Subdir5\",new MockDirectoryData()},
-        { @"c:\Dir\Subdir3\",new MockDirectoryData()},
-        { @"c:\demo\jQuery.js", new MockFileData("some js") },
-        { @"c:\demo\sample.txt", new MockFileData("text blub") }
-                 });
+            {
+                {@"c:\myfile.txt", new MockFileData("Testing is meh.")},
+                {@"c:\picture.jpg", new MockFileData("")},
+                {@"c:\anotherfile.txt", new MockFileData("Lorem Ipsum")},
+                {@"c:\Dir\", new MockDirectoryData()},
+                {@"c:\Dir\Subdir1\Subdir4\Subdir6\", new MockDirectoryData()},
+                {@"c:\Dir\Subdir2\Subdir5\", new MockDirectoryData()},
+                {@"c:\Dir\Subdir3\", new MockDirectoryData()},
+                {@"c:\demo\jQuery.js", new MockFileData("some js")},
+                {@"c:\demo\sample.txt", new MockFileData("text blub")}
+            });
             _tree = new DirectoryTree(@"c:\");
             _tree.SubDirectories.Add(new DirectoryTree(@"c:\Dir"));
             _tree.SubDirectories[0].SubDirectories.Add(new DirectoryTree(@"c:\Dir\Subdir1"));
             _tree.SubDirectories[0].SubDirectories.Add(new DirectoryTree(@"c:\Dir\Subdir2"));
             _tree.SubDirectories[0].SubDirectories.Add(new DirectoryTree(@"c:\Dir\Subdir3"));
             _tree.SubDirectories[0].SubDirectories[0].SubDirectories.Add(new DirectoryTree(@"c:\Dir\Subdir1\Subdir4"));
-            _tree.SubDirectories[0].SubDirectories[0].SubDirectories[0].SubDirectories.Add(new DirectoryTree(@"c:\Dir\Subdir1\Subdir4\Subdir6"));
+            _tree.SubDirectories[0].SubDirectories[0].SubDirectories[0].SubDirectories.Add(
+                new DirectoryTree(@"c:\Dir\Subdir1\Subdir4\Subdir6"));
             _tree.SubDirectories[0].SubDirectories[1].SubDirectories.Add(new DirectoryTree(@"c:\Dir\Subdir2\Subdir5"));
             _tree.SubDirectories.Add(new DirectoryTree(@"c:\demo"));
-
         }
+
         [TestMethod]
         public void ViewDirectories()
         {
             var directoryViewer = new DirectoryViewer(_fileSystem);
-            string[] subdir = directoryViewer.GetDirectories(@"c:\");
+            var subdir = directoryViewer.GetDirectories(@"c:\");
             Assert.AreEqual(2, subdir.Length);
             Assert.IsTrue(subdir.Contains(@"c:\Dir"));
             Assert.IsTrue(subdir.Contains(@"c:\demo"));
         }
+
         [TestMethod]
         public void ViewSubDirectories()
         {
@@ -80,6 +81,7 @@ namespace FileIndexer.Tests
             Assert.IsTrue(files.Contains(@"c:\picture.jpg"));
             Assert.IsTrue(files.Contains(@"c:\anotherfile.txt"));
         }
+
         [TestMethod]
         public void GetAllFiles()
         {
@@ -105,7 +107,5 @@ namespace FileIndexer.Tests
             tree.SubDirectories[1].Files.Add(@"c:\demo\sample.txt");
             Assert.AreEqual(tree, files);
         }
-
-
     }
 }
